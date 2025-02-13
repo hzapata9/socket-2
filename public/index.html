@@ -10,7 +10,23 @@
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <h1>Example Socket io</h1>
+    <h1>Example Socket io 1</h1>
+
+    <h2>Seleccione la sala:</h2>
+    <button onclick="room('room1')">Room1</button>
+    <button onclick="room('Room2')">Room2</button>
+
+    <h2>Enviar mensaje:</h2>
+    <form id="form">
+      <input
+        type="text"
+        id="message"
+      />
+      <button type="submit">Enviar</button>
+    </form>
+
+    <h2>Mensajes:</h2>
+    <ul id="messages"></ul>
 
     <script src="app.js"></script>
   </body>
