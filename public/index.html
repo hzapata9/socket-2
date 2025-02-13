@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -10,22 +10,29 @@
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <h1>Example Socket io 1</h1>
+    <h1>Socket.io</h1>
 
-    <h2>Seleccione la sala:</h2>
-    <button onclick="room('room1')">Room1</button>
-    <button onclick="room('Room2')">Room2</button>
+    <h3>Lista de usuario contectados:</h3>
+    <ul id="users"></ul>
 
-    <h2>Enviar mensaje:</h2>
+    <h3>Elige una sala:</h3>
+    <ul>
+      <li>
+        <button onclick="joinRoom('room1')">Room 1</button>
+        <button onclick="joinRoom('room2')">Room 2</button>
+        <button onclick="leaveRoom()">Salir de la sala</button>
+      </li>
+    </ul>
+
     <form id="form">
       <input
-        type="text"
-        id="message"
+        id="input"
+        autocomplete="off"
+        placeholder="Type a message"
       />
-      <button type="submit">Enviar</button>
+      <button type="submit">Send</button>
     </form>
 
-    <h2>Mensajes:</h2>
     <ul id="messages"></ul>
 
     <script src="app.js"></script>

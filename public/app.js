@@ -1,42 +1,67 @@
-const $form = document.querySelector("#form");
-const $message = document.querySelector("#message");
-const $messages = document.querySelector("#messages");
-let roomSelected = "";
+const username = prompt("Enter your username:");
 
 const socket = io("/chat");
 
-// enviar un mensaje a la sala room
-$form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const message = $message.value;
-  if (message.trim() === "") {
-    alert("Escribe un mensaje");
-    return;
-  }
+socket.on("connect", () => {
+  console.log("Connected to server");
+  socket.emit("join", username);
+});
 
-  if (roomSelected === "") {
-    alert("Selecciona una sala");
-    return;
-  }
+socket.on("users", (users) => {
+  const userList = document.getElementById("users");
+  userList.innerHTML = "";
 
-  socket.emit("message", {
-    room: roomSelected,
-    message,
+  users.forEach(({ username }) => {
+    const item = document.createElement("li");
+    item.textContent = username;
+    userList.appendChild(item);
   });
-  // $message.value = "";
-  $form.reset();
+
+  console.log("Users", users);
 });
 
-// escuchar los mensajes de la sala room1
-socket.on("message", (message) => {
-  $messages.innerHTML += `<li>${message}</li>`;
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+const users = document.getElementById("users");
+
+let roomName = "";
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (!roomName) {
+    alert("You must join a room first!");
+    return;
+  }
+
+  if (input.value) {
+    socket.emit("sendMessage", { room: roomName, message: input.value });
+  }
+  form.reset();
 });
 
-const room = (room) => {
-  console.log(room);
-  roomSelected = room;
-  // socket.emit("joinRoom", room);
+const joinRoom = (room) => {
+  roomName = room;
+  // Unirse a una sala
+  socket.emit("joinRoom", roomName);
+};
 
-  // unirse a la sala room1
-  socket.emit("joinRoom", roomSelected);
+// Escuchar mensajes de la sala
+socket.on("message", (messageData) => {
+  const { username, content, room } = messageData;
+
+  const item = document.createElement("li");
+  item.textContent = `${room} - ${username}: ${content}`;
+  messages.appendChild(item);
+});
+
+// Salir de la sala
+const leaveRoom = () => {
+  socket.emit("leaveRoom", roomName);
+  roomName = "";
+  console.log("Sala abandonada");
+
+  // Limpiar mensajes
+  messages.innerHTML = "";
 };
